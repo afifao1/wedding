@@ -38,6 +38,17 @@ services:
         networks:
             - wedding
 
+    redis:
+        image: redis:latest
+        container_name: afifa-wedding-redis
+        environment:
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        ports:
+            - "6383:6379"
+        volumes:
+            - ./redisdata:/data
+        networks:
+            - wedding
 volumes:
     pgdata:
 
