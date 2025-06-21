@@ -17,15 +17,15 @@ jobs:
       - name: 🔐 Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEYY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 185.191.141.44 >> ~/.ssh/known_hosts
 
       - name: 🚀 Deploy via SSH
         run: |
-          ssh root@185.191.141.44 << 'EOF'
+          ssh -o StrictHostKeyChecking=no root@185.191.141.44 << 'EOF'
             cd /afifa/wedding/
-            git pull origin main
+            git pull origin master
             docker exec afifa-wedding-app composer install --no-interaction --prefer-dist --optimize-autoloader
             docker exec afifa-wedding-app php artisan config:clear
             docker exec afifa-wedding-app php artisan view:clear
