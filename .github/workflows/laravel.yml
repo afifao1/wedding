@@ -24,7 +24,7 @@ jobs:
       - name: 🚀 Deploy via SSH
         run: |
           ssh root@185.191.141.44 << 'EOF'
-            cd /var/www/afifa/expense_tracker/
+            cd /afifa/wedding/
             git pull origin main
             docker exec afifa-wedding-app composer install --no-interaction --prefer-dist --optimize-autoloader
             docker exec afifa-wedding-app php artisan config:clear
