@@ -1,20 +1,25 @@
 <?php
+
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Venue;
 use App\Models\Service;
+use App\Services\VenueService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class VenueController extends Controller
 {
+    protected $venueService;
+
+    public function __construct(VenueService $venueService)
+    {
+        $this->venueService = $venueService;
+    }
+
     public function index()
     {
-        $venues = Cache::remember('venues_web', 86400, function () {
-            return Venue::with('service')->get();
-        });
-
+        $venues = $this->venueService->getAllVenues();
         return view('venues.index', compact('venues'));
     }
 
@@ -26,18 +31,23 @@ class VenueController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'service_id' => 'required',
-            'name' => 'required',
-            'location' => 'required',
+        $validated = $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'name' => 'required|string|max:255',
+            'location' => 'required|string',
             'capacity' => 'required|integer',
             'price' => 'required|numeric',
         ]);
 
-        Venue::create($request->all());
-        Cache::forget('venues_web');
+        $this->venueService->createVenue($validated);
 
-        return redirect()->route('venues.index')->with('success', 'Venue qo‘shildi!');
+        return redirect()->route('venues.index')->with('success', 'Venue muvaffaqiyatli qo‘shildi!');
+    }
+
+    public function show(Venue $venue)
+    {
+        $venue = $this->venueService->getVenueById($venue->id);
+        return view('venues.show', compact('venue'));
     }
 
     public function edit(Venue $venue)
@@ -48,25 +58,23 @@ class VenueController extends Controller
 
     public function update(Request $request, Venue $venue)
     {
-        $request->validate([
-            'service_id' => 'required',
-            'name' => 'required',
-            'location' => 'required',
+        $validated = $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'name' => 'required|string|max:255',
+            'location' => 'required|string',
             'capacity' => 'required|integer',
             'price' => 'required|numeric',
         ]);
 
-        $venue->update($request->all());
-        Cache::forget('venues_web');
+        $this->venueService->updateVenue($venue, $validated);
 
-        return redirect()->route('venues.index')->with('success', 'Venue yangilandi!');
+        return redirect()->route('venues.index')->with('success', 'Venue muvaffaqiyatli yangilandi!');
     }
 
     public function destroy(Venue $venue)
     {
-        $venue->delete();
-        Cache::forget('venues_web');
+        $this->venueService->deleteVenue($venue);
 
-        return redirect()->route('venues.index')->with('success', 'Venue o‘chirildi!');
+        return redirect()->route('venues.index')->with('success', 'Venue muvaffaqiyatli o‘chirildi!');
     }
 }

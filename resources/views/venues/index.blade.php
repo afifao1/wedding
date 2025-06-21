@@ -18,7 +18,7 @@
                     <th>Manzil</th>
                     <th>Sig‘imi</th>
                     <th>Narxi</th>
-                    <th>Xizmat turi</th>
+                    <th>Xizmat Turi</th>
                     <th>Amallar</th>
                 </tr>
             </thead>
@@ -31,6 +31,8 @@
                         <td>{{ $venue->price }}</td>
                         <td>{{ $venue->service->name }}</td>
                         <td>
+                            <a href="{{ route('venues.show', $venue->id) }}" style="margin-right: 10px;">Ko‘rish</a>
+
                             <a href="{{ route('venues.edit', $venue->id) }}" style="margin-right: 10px;">Tahrirlash</a>
 
                             <form action="{{ route('venues.destroy', $venue->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Haqiqatan o‘chirmoqchimisiz?');">

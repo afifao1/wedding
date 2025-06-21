@@ -1,27 +1,70 @@
 <?php
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Services\VenueService;
+use Illuminate\Http\Request;
 use App\Models\Venue;
-use Illuminate\Support\Facades\Cache;
 
 class VenueController extends Controller
 {
-    public function index()
-    {
-        $venues = Cache::remember('venues', 86400, function () {
-            return Venue::with('service')->get();
-        });
+    protected $venueService;
 
-        return response()->json($venues);
+    public function __construct(VenueService $venueService)
+    {
+        $this->venueService = $venueService;
     }
 
-    public function show($id)
+    // Barcha venues
+    public function index()
     {
-        $venue = Cache::remember("venue_$id", 86400, function () use ($id) {
-            return Venue::with('service')->findOrFail($id);
-        });
+        return response()->json($this->venueService->getAllVenues());
+    }
 
-        return response()->json($venue);
+    // Bitta venue
+    public function show(Venue $venue)
+    {
+        return response()->json($this->venueService->getVenueById($venue->id));
+    }
+
+    // Yangi venue qo'shish
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'name' => 'required|string|max:255',
+            'location' => 'required|string',
+            'capacity' => 'required|integer',
+            'price' => 'required|numeric',
+        ]);
+
+        $venue = $this->venueService->createVenue($validated);
+
+        return response()->json($venue, 201);
+    }
+
+    // Venue yangilash
+    public function update(Request $request, Venue $venue)
+    {
+        $validated = $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'name' => 'required|string|max:255',
+            'location' => 'required|string',
+            'capacity' => 'required|integer',
+            'price' => 'required|numeric',
+        ]);
+
+        $updatedVenue = $this->venueService->updateVenue($venue, $validated);
+
+        return response()->json($updatedVenue);
+    }
+
+    // Venue o'chirish
+    public function destroy(Venue $venue)
+    {
+        $this->venueService->deleteVenue($venue);
+
+        return response()->json(['message' => 'Venue muvaffaqiyatli o‘chirildi']);
     }
 }
