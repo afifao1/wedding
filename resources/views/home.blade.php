@@ -1,19 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1>Dashboard</h1>
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Dashboard</h1>
 
-        <ul style="list-style: none; padding: 0; font-size: 20px;">
-            <li style="margin-bottom: 15px;">
-                <a href="{{ route('services.index') }}">🏛 Xizmatlar ({{ $serviceCount }} ta)</a>
-            </li>
-            <li style="margin-bottom: 15px;">
-                <a href="{{ route('venues.index') }}">🏢 To‘yxonalar ({{ $venueCount }} ta)</a>
-            </li>
-            <li style="margin-bottom: 15px;">
-                <a href="{{ route('books.index') }}">📚 Kitoblar ({{ $bookCount }} ta)</a>
-            </li>
-        </ul>
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h2 class="card-title">🏛 Xizmatlar</h2>
+                    <p class="card-text display-6">{{ $serviceCount }} ta</p>
+                    <a href="{{ route('services.index') }}" class="btn btn-primary">Ko‘rish</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h2 class="card-title">🏢 To‘yxonalar</h2>
+                    <p class="card-text display-6">{{ $venueCount }} ta</p>
+                    <a href="{{ route('venues.index') }}" class="btn btn-success">Ko‘rish</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h2 class="card-title">📚 Kitoblar</h2>
+                    <p class="card-text display-6">{{ $bookCount }} ta</p>
+                    <a href="{{ route('books.index') }}" class="btn btn-warning">Ko‘rish</a>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 @endsection

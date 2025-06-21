@@ -1,18 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1>Xizmatlar</h1>
-        <a href="{{ route('services.create') }}">Yangi Xizmat Qo‘shish</a>
+<div class="container py-5">
+    <h1 class="mb-4">🏛 Xizmatlar</h1>
+    <a href="{{ route('services.create') }}" class="btn btn-success mb-4">➕ Yangi Xizmat Qo‘shish</a>
+    <a href="{{ route('home') }}" class="btn btn-secondary mb-4 ms-2">🏠 Home</a>
 
-        @if (session('success'))
-            <div style="color: green; margin-top: 10px;">
-                {{ session('success') }}
-            </div>
-        @endif
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-        <table border="1" cellpadding="10" cellspacing="0" style="margin-top: 20px;">
-            <thead>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
                 <tr>
                     <th>Nomi</th>
                     <th>Turi</th>
@@ -25,14 +27,13 @@
                         <td>{{ $service->name }}</td>
                         <td>{{ $service->type }}</td>
                         <td>
-                            <a href="{{ route('services.show', $service->id) }}" style="margin-right: 10px;">Ko‘rish</a>
-
-                            <a href="{{ route('services.edit', $service->id) }}" style="margin-right: 10px;">Tahrirlash</a>
+                            <a href="{{ route('services.show', $service->id) }}" class="btn btn-info btn-sm me-2">Ko‘rish</a>
+                            <a href="{{ route('services.edit', $service->id) }}" class="btn btn-warning btn-sm me-2">Tahrirlash</a>
 
                             <form action="{{ route('services.destroy', $service->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Haqiqatan o‘chirmoqchimisiz?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" style="color: red;">O‘chirish</button>
+                                <button type="submit" class="btn btn-danger btn-sm">O‘chirish</button>
                             </form>
                         </td>
                     </tr>
@@ -40,4 +41,5 @@
             </tbody>
         </table>
     </div>
+</div>
 @endsection

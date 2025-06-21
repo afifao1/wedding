@@ -1,18 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1>To‘yxonalar</h1>
-        <a href="{{ route('venues.create') }}">Yangi To‘yxona Qo‘shish</a>
+<div class="container py-5">
+    <h1 class="mb-4">🏢 To‘yxonalar</h1>
+    <a href="{{ route('venues.create') }}" class="btn btn-success mb-4">➕ Yangi To‘yxona Qo‘shish</a>
+    <a href="{{ route('home') }}" class="btn btn-secondary mb-4 ms-2">🏠 Home</a>
 
-        @if (session('success'))
-            <div style="color: green; margin-top: 10px;">
-                {{ session('success') }}
-            </div>
-        @endif
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-        <table border="1" cellpadding="10" cellspacing="0" style="margin-top: 20px;">
-            <thead>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
                 <tr>
                     <th>Nomi</th>
                     <th>Manzil</th>
@@ -31,14 +33,13 @@
                         <td>{{ $venue->price }}</td>
                         <td>{{ $venue->service->name }}</td>
                         <td>
-                            <a href="{{ route('venues.show', $venue->id) }}" style="margin-right: 10px;">Ko‘rish</a>
-
-                            <a href="{{ route('venues.edit', $venue->id) }}" style="margin-right: 10px;">Tahrirlash</a>
+                            <a href="{{ route('venues.show', $venue->id) }}" class="btn btn-info btn-sm me-2">Ko‘rish</a>
+                            <a href="{{ route('venues.edit', $venue->id) }}" class="btn btn-warning btn-sm me-2">Tahrirlash</a>
 
                             <form action="{{ route('venues.destroy', $venue->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Haqiqatan o‘chirmoqchimisiz?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" style="color: red;">O‘chirish</button>
+                                <button type="submit" class="btn btn-danger btn-sm">O‘chirish</button>
                             </form>
                         </td>
                     </tr>
@@ -46,4 +47,5 @@
             </tbody>
         </table>
     </div>
+</div>
 @endsection
