@@ -1,20 +1,31 @@
 <?php
+
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Services\BookService;
 use App\Models\Book;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
+    protected $bookService;
+
+    public function __construct(BookService $bookService)
+    {
+        $this->bookService = $bookService;
+    }
+
     public function index()
     {
-        $books = Cache::remember('books_web', 86400, function () {
-            return Book::all();
-        });
-
+        $books = $this->bookService->getAllBooks();
         return view('books.index', compact('books'));
+    }
+
+    public function show($id)
+    {
+        $book = $this->bookService->getBookById($id);
+        return view('books.show', compact('book'));
     }
 
     public function create()
@@ -24,16 +35,8 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'author' => 'required',
-            'description' => 'required',
-        ]);
-
-        Book::create($request->all());
-        Cache::forget('books_web');
-
-        return redirect()->route('books.index')->with('success', 'Kitob qo‘shildi!');
+        $this->bookService->createBook($request->all());
+        return redirect()->route('books.index')->with('success', 'Kitob muvaffaqiyatli qo‘shildi');
     }
 
     public function edit(Book $book)
@@ -43,23 +46,13 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
-        $request->validate([
-            'title' => 'required',
-            'author' => 'required',
-            'description' => 'required',
-        ]);
-
-        $book->update($request->all());
-        Cache::forget('books_web');
-
-        return redirect()->route('books.index')->with('success', 'Kitob yangilandi!');
+        $this->bookService->updateBook($book, $request->all());
+        return redirect()->route('books.index')->with('success', 'Kitob muvaffaqiyatli yangilandi');
     }
 
     public function destroy(Book $book)
     {
-        $book->delete();
-        Cache::forget('books_web');
-
-        return redirect()->route('books.index')->with('success', 'Kitob o‘chirildi!');
+        $this->bookService->deleteBook($book);
+        return redirect()->route('books.index')->with('success', 'Kitob muvaffaqiyatli o‘chirildi');
     }
 }

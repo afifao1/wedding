@@ -27,6 +27,7 @@
                         <td>{{ $book->author }}</td>
                         <td>{{ $book->description }}</td>
                         <td>
+                            <a href="{{ route('books.show', $book->id) }}" style="margin-right: 10px;">Ko‘rish</a>
                             <a href="{{ route('books.edit', $book->id) }}" style="margin-right: 10px;">Tahrirlash</a>
 
                             <form action="{{ route('books.destroy', $book->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Haqiqatan o‘chirmoqchimisiz?');">
