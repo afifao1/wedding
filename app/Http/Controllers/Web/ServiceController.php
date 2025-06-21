@@ -6,14 +6,20 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
+use App\Services\ServiceService;
+
 class ServiceController extends Controller
 {
+    protected $serviceService;
+
+    public function __construct(ServiceService $serviceService)
+    {
+        $this->serviceService = $serviceService;
+    }
+
     public function index()
     {
-        $services = Cache::remember('services_web', 86400, function () {
-            return Service::all();
-        });
-
+        $services = $this->serviceService->getAllServices();
         return view('services.index', compact('services'));
     }
 
@@ -24,14 +30,8 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'type' => 'required',
-        ]);
-
-        Service::create($request->all());
-        Cache::forget('services_web');
-
+        $request->validate(['name' => 'required', 'type' => 'required']);
+        $this->serviceService->createService($request->all());
         return redirect()->route('services.index')->with('success', 'Xizmat qo‘shildi!');
     }
 
@@ -42,22 +42,21 @@ class ServiceController extends Controller
 
     public function update(Request $request, Service $service)
     {
-        $request->validate([
-            'name' => 'required',
-            'type' => 'required',
-        ]);
-
-        $service->update($request->all());
-        Cache::forget('services_web');
-
+        $request->validate(['name' => 'required', 'type' => 'required']);
+        $this->serviceService->updateService($service, $request->all());
         return redirect()->route('services.index')->with('success', 'Xizmat yangilandi!');
     }
 
     public function destroy(Service $service)
     {
-        $service->delete();
-        Cache::forget('services_web');
-
+        $this->serviceService->deleteService($service);
         return redirect()->route('services.index')->with('success', 'Xizmat o‘chirildi!');
     }
+    
+    public function show($id)
+    {
+        $service = $this->serviceService->getServiceById($id);
+        return view('services.show', compact('service'));
+    }
 }
+

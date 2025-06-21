@@ -25,6 +25,8 @@
                         <td>{{ $service->name }}</td>
                         <td>{{ $service->type }}</td>
                         <td>
+                            <a href="{{ route('services.show', $service->id) }}" style="margin-right: 10px;">Ko‘rish</a>
+
                             <a href="{{ route('services.edit', $service->id) }}" style="margin-right: 10px;">Tahrirlash</a>
 
                             <form action="{{ route('services.destroy', $service->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Haqiqatan o‘chirmoqchimisiz?');">
